@@ -1,6 +1,11 @@
 Requirements: 
  - pass in functions at evaluation time
+ - pass in arbitrary context to all functions
  - concurrent parsing 
+ - eval.Vars() to optionally(?) include locality information. 
+     - ex. a variable could understand which function, (and which argument) 
+       it was a part of. 
+     - each variable has a function to calculate "nearness"
  - marshalling of evaluatable object
    - parse should bring down the evaluatable expression to the smallest possible
      unit to evaluate. hence something like 3^5+1 should just be 244
@@ -16,7 +21,7 @@ Requirements:
    - string: `+` string concatination
    - math (bedmas): `(` `)` `+` `-` `*` `/` `^` `%` 
    - boolean: `true` `false` `&&` `||` `>` `<` `<=` `>=` `!=` `!`
-   - Ternary conditional: ? :
+   - Ternary conditional: `?` `:`
    - functions: `yourfnname(...)`
 
 Parsing: 
