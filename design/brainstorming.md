@@ -96,3 +96,31 @@ interesting things to note
    needs to be left in the `wr` state to wait for the rightward items to be sent 
    towards it to then "stack-on" its leftward item. 
 
+-----------------------------------
+Object Types:
+ - Variables 
+   - send thier information in the priority direction
+   - `A` 
+   - always sends to a modifier before an operator
+ - Operators 
+   - collect input from both sides then execute and become a variable
+   - `,` `+` `-` `*` `/` `^` `%` `&&` `||` `>` `<` `<=` `>=` `!=`
+   - Tertiary Operator 
+     - `?` `:`
+     - `?` operates like a regular operator, if left is true, var is right 
+           if left is false var becomes special var "tertiary-false" type
+     - `:` operates like a regular operator, if left is "tertiary-false" then
+           becomes right, anything else var becomes left. 
+           All other operators error if they hit the "tertiary-false" type
+ - Modifiers 
+   - recieves variables from the right side then becomes a variable
+   - `-` `!`
+ - Brackets (Are this kind of just variables?) 
+   - `someFunc(` `(` `)`
+   - variables will always send away from a bracket unless there are brackets
+     on each side, in which case they dissolve both brackets (calling the function
+     in the process if there is one) then becomme the super-variable.
+   - variables need to be able to "reach" into each bracket to gain the surrounding 
+     destination channels from outside each bracket. 
+
+
