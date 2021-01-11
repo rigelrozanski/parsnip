@@ -48,6 +48,7 @@ Parsing:
    c=completed signal
 
 // TODO rework this example with information from below. 
+```
 example-1
 =   A      +     B    /     C    *    4  [end]
 wr  r->    w     r->  w   <-r    w  <-r  wlr
@@ -55,7 +56,7 @@ wr  r->    w     r->  w   <-r    w  <-r  wlr
            wr         t        <-e
 wr       <-e                     t
 c   
-_______
+```
 
 how should priority be implmented however?
 what if two elements as stuck on "waiting-rightward" and then a rightward 
@@ -69,6 +70,8 @@ wrr= waiting-right, reflect signal, when the signal is recieved,
      reflect its new signal rightward.
 wrl= waiting-left, reflect signal 
 
+
+```
 example 2
 =    someFn(  A    ,    B    ,    C    )    [end]
 wr      wrr   r->  w    r->  w  <-r    wl    wlr
@@ -78,6 +81,7 @@ wr      wrr   r->  w    r->  w  <-r    wl    wlr
          t                              e->  wlr
 wr                                      t  <-c 
 c
+```
 
 
 interesting things to note
@@ -97,30 +101,66 @@ interesting things to note
    towards it to then "stack-on" its leftward item. 
 
 -----------------------------------
-Object Types:
+Preprocessing:
+ - add * symbols between any vars and bracket outsides
+ - add * symbols between vars (would have been seperated by spaces)
+ - remove a preceding `=` if it exists 
+ - error if uneven number of `?` and `:` symbols
+ - error if uneven number of brackets leftwise and rightwise
+ - parse between modifier and operator versions of `-` 
+ - error on double modifier
+ - error if an [non-modifier] operator exists on the inside side of a bracket
+   - brackets on brackets are allowed
+
+Object Types: IMPORTANT REFERENCE : https://en.wikipedia.org/wiki/Order_of_operations
  - Variables 
    - send thier information in the priority direction
    - `A` 
-   - always sends to a modifier before an operator
+   - always send to a [`^`] operator before the `-` modifier
+   - always send to the `!` modifier before another logical operator
+   - always send to the `-` modifier before another [`+` `-` `*` `/`] operator
  - Operators 
+   - HAVE RECEIVERS which at init are sent to surrounding VARS, MODS, and BRACS
    - collect input from both sides then execute and become a variable
    - `,` `+` `-` `*` `/` `^` `%` `&&` `||` `>` `<` `<=` `>=` `!=`
+   - `&&` operator has higher priority than `||` 
+   - comparors (`>` `<` `<=` `>=` `!=`) have a higher priority than 
+     logical operators (`&&` `||`)
    - Tertiary Operator 
      - `?` `:`
+     - both have lower priority than all other operators (`?` then `:`) 
      - `?` operates like a regular operator, if left is true, var is right 
            if left is false var becomes special var "tertiary-false" type
      - `:` operates like a regular operator, if left is "tertiary-false" then
            becomes right, anything else var becomes left. 
            All other operators error if they hit the "tertiary-false" type
  - Modifiers 
+   - HAVE RECEIVERS which at init are sent to surrounding VARS and BRACS
    - recieves variables from the right side then becomes a variable
    - `-` `!`
  - Brackets (Are this kind of just variables?) 
+   - HAVE RECEIVERS which at init are sent INWARD to the surrounding VARS and BRACS
    - `someFunc(` `(` `)`
    - variables will always send away from a bracket unless there are brackets
      on each side, in which case they dissolve both brackets (calling the function
      in the process if there is one) then becomme the super-variable.
    - variables need to be able to "reach" into each bracket to gain the surrounding 
      destination channels from outside each bracket. 
+   - have a "suck in" function to take on the brackets outer channels?
 
+DO NOT use [start] and [end] operators. just have nil operators, if a variable has 2 nil 
+operators, conclude the calculation. 
 
+PRIORITY ORDERING
+ - `^` 
+ - `-` modifier 
+ - `!` modifier 
+ - `*` `/` 
+ - `%` 
+ - `+` `-` operator
+ - `>` `<` `<=` `>=` `!=` `==`
+ - `&&` `||`
+ - `?` 
+ - `:` 
+ - `,`
+ - `(` `)`
