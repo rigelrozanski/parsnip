@@ -1,5 +1,8 @@
 Requirements: 
  - pass in functions at evaluation time
+   - channels/routines are created
+      - once at parse time (to minimize objects)
+      - once at evaluation time
  - pass in arbitrary context to all functions
  - concurrent parsing 
  - eval.Vars() to optionally(?) include locality information. 
@@ -9,6 +12,8 @@ Requirements:
  - marshalling of evaluatable object
    - parse should bring down the evaluatable expression to the smallest possible
      unit to evaluate. hence something like 3^5+1 should just be 244
+   - comparing operators at each variable is probably a similar
+     cost as reading the direction as it was compared at parse time... ? maybe ? 
  - work with: string, int64, float, bool 
    - straight-forward design to expand to support other datatypes
    - all types should implement all operators, but just 
@@ -147,6 +152,8 @@ Object Types: IMPORTANT REFERENCE : https://en.wikipedia.org/wiki/Order_of_opera
    - variables need to be able to "reach" into each bracket to gain the surrounding 
      destination channels from outside each bracket. 
    - have a "suck in" function to take on the brackets outer channels?
+   - at parse time, brackets should just be "tacked-on" to the inward variable, so the inward 
+     variable then knows "I have a [bracket] * to my right"
 
 DO NOT use [start] and [end] operators. just have nil operators, if a variable has 2 nil 
 operators, conclude the calculation. 
@@ -163,4 +170,3 @@ PRIORITY ORDERING
  - `?` 
  - `:` 
  - `,`
- - `(` `)`
